@@ -1,0 +1,19 @@
+{
+    "cSpell.words": [
+        "dartz",
+        "datasource",
+        "datasources",
+        "emilys",
+        "emilyspass",
+        "Keychain",
+        "Subtags",
+        "Usecase",
+        "usecases",
+        "xxlg",
+        "vi_VN"
+    ],
+    "cSpell.ignorePaths": [
+        "assets/translations/vi_VN.json",
+        "bin/",
+    ]
+}
