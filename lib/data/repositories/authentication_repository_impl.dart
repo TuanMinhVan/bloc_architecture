@@ -14,31 +14,17 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository {
   final AuthLocalDataSource localDataSource;
 
   @override
-  Future<bool> isAuthenticated() {
-    return localDataSource.isAuthenticated();
-  }
-
-  @override
-  Future<void> saveToken(String token) {
-    return localDataSource.saveToken(token);
-  }
-
-  @override
   Future<void> logout() => localDataSource.removeToken();
 
   @override
   ResultFuture<User> authenticate({
     required String username,
     required String password,
-  }) async {
-    final result = await remoteDataSource.authenticate(
+  }) {
+    return remoteDataSource.authenticate(
       username: username,
       password: password,
     );
-    if (result is Success<User>) {
-      await saveToken(result.data.accessToken!);
-    }
-    return result;
   }
 
   @override

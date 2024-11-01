@@ -4,8 +4,8 @@ import 'button_custom.dart';
 class LanguagePicker extends HookWidget {
   const LanguagePicker({super.key});
 
-  static void pick(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).push(
+  static Future<void> pick(BuildContext context) {
+    return Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => const LanguagePicker(),
         settings: const RouteSettings(name: 'LanguageRoute'),
@@ -20,7 +20,7 @@ class LanguagePicker extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(LocaleKeys.languageScreenTitle.tr()),
+        title: Text(context.tr(LocaleKeys.languageScreenTitle)),
       ),
       body: SafeArea(
         child: Column(
@@ -35,7 +35,7 @@ class LanguagePicker extends HookWidget {
                   );
                   return ListTile(
                     title: Text(
-                      isoCodeName.name.tr(),
+                      context.tr(isoCodeName.name),
                       style: context.bodyLarge,
                     ),
                     trailing: language == defaultLanguage.value
@@ -54,11 +54,12 @@ class LanguagePicker extends HookWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
               child: GradientButton(
-                text: LocaleKeys.languageScreenButton.tr(),
+                text: context.tr(LocaleKeys.languageScreenButton),
                 height: 44.h,
                 onPressed: () {
                   final locale = defaultLanguage.value;
                   context.setLocale(locale);
+
                   Navigator.of(context).pop();
                 },
               ),

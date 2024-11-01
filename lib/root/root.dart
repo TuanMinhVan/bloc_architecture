@@ -6,6 +6,7 @@ import '../blocs/preferences/preferences_bloc.dart';
 import '../core/config.dart';
 import '../core/routes/app_routes.dart';
 import '../core/services/injection_container.dart';
+import '../core/services/lifecycle_app.dart';
 import '../presentation/widgets/indicators/loading_indicator.dart';
 
 class RootApp extends HookWidget {
@@ -20,8 +21,9 @@ class RootApp extends HookWidget {
 
         /// set the preferred orientations to portrait up
         SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-        getIt<PreferencesBloc>().add(const PreferencesEventInitial());
-        getIt<AuthenticationBloc>().add(const AuthenticationCheckEvent());
+        getIt<PreferencesBloc>().add(const PreferencesEvent.initial());
+        getIt<AuthenticationBloc>().add(const AuthenticationEvent.check());
+        lifecycleApp();
         return;
       },
       [],
@@ -73,10 +75,10 @@ class LoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CommonBloc, CommonState>(
-      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
-      builder: (context, state) => Visibility(
-        visible: state.isLoading,
+    return BlocSelector<CommonBloc, CommonState, bool>(
+      selector: (state) => state.isLoading,
+      builder: (context, isLoading) => Visibility(
+        visible: isLoading,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.5),

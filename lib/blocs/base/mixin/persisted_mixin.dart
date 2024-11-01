@@ -85,7 +85,7 @@ mixin PersistedStateMixin<T> {
   }
 
   /// [save] method to save state to local storage
-  void save() async {
+  Future<void> save() async {
     await box.put(cacheKey, toJson());
   }
 

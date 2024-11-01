@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../core/config.dart';
@@ -16,38 +15,42 @@ part 'preferences_state.dart';
 part 'preferences_bloc.freezed.dart';
 part 'preferences_bloc.g.dart';
 
-/// Bloc for managing application preferences.
+/// Bloc for managing user preferences.
 ///
-/// This bloc handles loading, saving, and updating preferences.
+/// This bloc handles loading and saving user preferences.
 /// It uses the `PersistedStateMixin` to persist the state to local storage.
 class PreferencesBloc extends BaseBloc<PreferencesEvent, PreferencesState>
-    with PersistedStateMixin {
+    with PersistedStateMixin<PreferencesState> {
   /// Creates a new instance of the `PreferencesBloc`.
   PreferencesBloc() : super(PreferencesState.loaded()) {
-    on<PreferencesEventInitial>(_initialize);
-    on<PreferencesEventChangeLocale>(_changeLocale);
+    on<PreferencesEvent>((event, emit) async {
+      await event.when(
+        initial: () => _initialize(emit),
+        changeLocale: (locale) => _changeLocale(locale, emit),
+      );
+    });
   }
 
   /// Initializes the bloc by loading the persisted state.
-  Future<void> _initialize(
-    PreferencesEvent event,
-    Emitter<PreferencesState> emit,
-  ) async {
+  Future<void> _initialize(Emitter<PreferencesState> emit) async {
     final newState = await load();
     if (newState != null) {
       emit(newState);
     }
   }
 
-  void _changeLocale(
-    PreferencesEventChangeLocale event,
+  /// Handles the `ChangeLocale` event.
+  ///
+  /// Updates the locale in the state and saves the new state to local storage.
+  Future<void> _changeLocale(
+    Locale locale,
     Emitter<PreferencesState> emit,
-  ) {
-    emit(state.copyWith(locale: event.locale));
-    save();
+  ) async {
+    emit(state.copyWith(locale: locale));
+    await save();
   }
 
-  /// The cache key used for persisting the state.
+  /// The cache key used to store the persisted state.
   @override
   String get cacheKey => 'preferences';
 

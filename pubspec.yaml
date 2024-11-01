@@ -45,6 +45,7 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   get_it: ^8.0.1
   retrofit: ^4.4.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +56,7 @@ dev_dependencies:
   json_serializable: ^6.8.0
   auto_route_generator: ^9.0.0
   retrofit_generator: ">=8.0.0 <10.0.0"
+  flutter_gen_runner: ^5.8.0
 
 flutter:
   uses-material-design: true
@@ -62,6 +64,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/translations/
+    - assets/navigator/
 
 flutter_gen:
   output: lib/core/collections

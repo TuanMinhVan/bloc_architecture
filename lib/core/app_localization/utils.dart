@@ -53,7 +53,7 @@ extension MapExtension<K> on Map<K, dynamic> {
 /// Logger for the AppLocalization package.
 class AppLocalizationLogger {
   /// Logs a debug message.
-  static void debug(Object message) {
+  static void debug(Object? message) {
     developer.log(message.toString(), name: 'AppLocalization');
   }
 }

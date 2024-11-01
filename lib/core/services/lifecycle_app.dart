@@ -1,13 +1,22 @@
 import 'package:flutter/foundation.dart';
 
+import '../../blocs/common/common_bloc.dart';
 import '../config.dart';
+import 'injection_container.dart';
 
 Future lifecycleApp() async {
   // Add your function code here!
   WidgetsBinding.instance.addObserver(
     LifecycleEventHandler(
       resumeCallBack: () async {
-        Logger.log('App resumed', tag: 'Lifecycle');
+        getIt<CommonBloc>().add(
+          const CommonEvent.appLifecycle(LifecycleState.resumed),
+        );
+      },
+      suspendingCallBack: () async {
+        getIt<CommonBloc>().add(
+          const CommonEvent.appLifecycle(LifecycleState.suspended),
+        );
       },
     ),
   );
@@ -23,7 +32,6 @@ class LifecycleEventHandler extends WidgetsBindingObserver {
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
-    Logger.log('state changed ${state.name}');
     switch (state) {
       case AppLifecycleState.resumed:
         if (resumeCallBack != null) {

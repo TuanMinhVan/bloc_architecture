@@ -1,12 +1,9 @@
 part of 'common_bloc.dart';
 
-sealed class CommonEvent extends BaseEvent {
-  const CommonEvent();
-}
-
 @freezed
-class LoadingVisibilityEvent extends CommonEvent with _$LoadingVisibilityEvent {
-  const factory LoadingVisibilityEvent({
-    required bool isLoading,
-  }) = _LoadingVisibilityEvent;
+class CommonEvent extends BaseEvent with _$CommonEvent {
+  const factory CommonEvent.loadingVisibility(bool isLoading) =
+      _LoadingVisibility;
+  const factory CommonEvent.appLifecycle(LifecycleState lifecycleState) =
+      _AppLifecycleEvent;
 }

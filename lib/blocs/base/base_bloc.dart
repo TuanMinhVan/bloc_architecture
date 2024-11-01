@@ -27,10 +27,10 @@ abstract class BaseBloc<S extends BaseEvent, T> extends Bloc<S, T> {
   }
 
   void startLoading() {
-    getIt<CommonBloc>().add(const LoadingVisibilityEvent(isLoading: true));
+    getIt<CommonBloc>().add(const CommonEvent.loadingVisibility(true));
   }
 
   void stopLoading() {
-    getIt<CommonBloc>().add(const LoadingVisibilityEvent(isLoading: false));
+    getIt<CommonBloc>().add(const CommonEvent.loadingVisibility(false));
   }
 }

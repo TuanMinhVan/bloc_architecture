@@ -1,100 +1,114 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../core/errors/exception.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/routes/app_routes.gr.dart';
-import '../../domain/usecases/check_authentication.dart';
-import '../../domain/usecases/login_user.dart';
+import '../../domain/entities/user.dart';
 import '../../domain/usecases/logout_user.dart';
 import '../base/base_bloc.dart';
 import '../base/base_event.dart';
 import '../base/base_state.dart';
+import '../base/mixin/persisted_mixin.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-/// Authentication Bloc
+part 'authentication_bloc.freezed.dart';
+part 'authentication_bloc.g.dart';
+
+/// Bloc responsible for managing the authentication state of the application.
 ///
-/// This bloc handles the authentication logic of the application.
-/// It manages the user's login, registration, and logout.
+/// This bloc handles the following events:
+/// - [AuthenticationEvent.check]: Checks the authentication state and emits the
+///   appropriate state.
+/// - [AuthenticationEvent.logout]: Logs the user out and emits the
+///   [AuthenticationState.unauthenticated] state.
+/// - [AuthenticationEvent.authenticated]: Authenticates the user and emits the
+///   [AuthenticationState.authenticated] state.
 class AuthenticationBloc
-    extends BaseBloc<AuthenticationEvent, AuthenticationState> {
-  /// Constructor for the AuthenticationBloc
+    extends BaseBloc<AuthenticationEvent, AuthenticationState>
+    with PersistedStateMixin<AuthenticationState> {
+  /// Creates a new instance of the [AuthenticationBloc] class.
   ///
-  /// Takes the following parameters:
-  /// - createUser: A [CreateUser] usecase to create a new user.
-  /// - getUsers: A [GetUsers] usecase to get all users.
-  /// - loginUser: A [LoginUser] usecase to login a user.
-  /// - checkAuthentication: A [CheckAuthentication] usecase to check if the user is authenticated.
-  AuthenticationBloc({
-    required this.loginUser,
-    required this.checkAuthentication,
-    required this.logoutUser,
-  }) : super(
-          const AuthenticationState(isAuthenticated: false),
-        ) {
-    on<AuthenticationCheckEvent>(_authenticationCheck);
-    on<AuthenticationLogoutEvent>(_logoutUser);
-    on<AuthenticationLoginEvent>(_login);
+  /// The [logoutUser] parameter is the [LogoutUser] usecase that is used to
+  /// log the user out.
+  AuthenticationBloc(this.logoutUser) : super(AuthenticationState.unknown()) {
+    on<AuthenticationEvent>((event, emit) async {
+      await event.when(
+        check: () => _authenticationCheck(emit),
+        logout: () => _logoutUser(emit),
+        authenticated: (user) => _authenticated(user, emit),
+      );
+    });
   }
 
-  /// The [LoginUser] usecase.
-  final LoginUser loginUser;
+  /// Completer used to signal when the authentication check is complete.
+  Completer<bool> authCheck = Completer<bool>();
 
   /// The [LogoutUser] usecase.
   final LogoutUser logoutUser;
 
-  /// The [CheckAuthentication] usecase.
-  final CheckAuthentication checkAuthentication;
-
-  /// Called when the bloc is initialized.
+  /// Handles the [AuthenticationEvent.authenticated] event.
   ///
-  /// Checks if the user is already authenticated.
-  /// If the user is authenticated, the [AuthenticationState] is updated.
-  Future<void> _authenticationCheck(
-    AuthenticationCheckEvent event,
+  /// This method authenticates the user and emits the
+  /// [AuthenticationState.authenticated] state.
+  Future<void> _authenticated(
+    User user,
     Emitter<AuthenticationState> emit,
   ) async {
-    final isLoggedIn = await checkAuthentication.call();
-    emit(AuthenticationState(isAuthenticated: isLoggedIn));
+    emit(AuthenticationState.authenticated(user));
+    await save();
+    _setAuthCheck();
   }
 
-  Future<void> _logoutUser(_, Emitter<AuthenticationState> emit) async {
-    startLoading();
-    await logoutUser.call();
-    emit(const AuthenticationState());
-    stopLoading();
+  /// Sets the authentication check completer.
+  ///
+  /// This method is called when the authentication state changes.
+  void _setAuthCheck() {
+    if (authCheck.isCompleted) {
+      authCheck = Completer<bool>();
+    }
+    authCheck.complete(state.status == AuthenticationStatus.authenticated);
+  }
 
+  /// Handles the [AuthenticationEvent.check] event.
+  ///
+  /// This method checks the authentication state and emits the appropriate
+  /// state.
+  Future<void> _authenticationCheck(
+    Emitter<AuthenticationState> emit,
+  ) async {
+    final state = await load();
+    if (state != null) {
+      emit(state);
+    }
+    _setAuthCheck();
+  }
+
+  /// Handles the [AuthenticationEvent.logout] event.
+  ///
+  /// This method logs the user out and emits the
+  /// [AuthenticationState.unauthenticated] state.
+  Future<void> _logoutUser(Emitter<AuthenticationState> emit) async {
+    emit(AuthenticationState.unauthenticated());
+    await save();
+    _setAuthCheck();
     appRouter.pushAndPopUntil(LoginRoute(), predicate: (_) => false);
   }
 
-  /// Logs in the user.
-  ///
-  /// Takes the following parameters:
-  /// - emit: The [Emitter] to emit the new state.
-  /// - username: The username of the user.
-  /// - password: The password of the user.
-  Future<void> _login(
-    AuthenticationLoginEvent event,
-    Emitter<AuthenticationState> emit,
-  ) async {
-    startLoading();
-    emit(const AuthenticationStateLoading());
-    final params = LoginParam(
-      username: event.username,
-      password: event.password,
-    );
-    final result = await loginUser.call(params);
-    stopLoading();
-    result.when(
-      success: (data) {
-        emit(const AuthenticationState(isAuthenticated: true));
-      },
-      failure: (error, _) {
-        emit(AuthenticationLoginFailure(error));
-      },
-    );
+  /// The cache key for the authentication state.
+  @override
+  String get cacheKey => 'ff_authentication_state';
+
+  /// Converts the authentication state to a JSON map.
+  @override
+  Map<String, dynamic> toJson() => state.toJson();
+
+  /// Converts a JSON map to an authentication state.
+  @override
+  FutureOr<AuthenticationState> fromJson(Map<String, dynamic> json) {
+    return AuthenticationState.fromJson(json);
   }
 }

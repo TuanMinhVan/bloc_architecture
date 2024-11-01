@@ -1,19 +1,9 @@
 part of 'user_bloc.dart';
 
-class UserState extends BaseState {
-  const UserState();
-}
-
-class UserLoading extends UserState {
-  const UserLoading();
-}
-
-class UserLoaded extends UserState {
-  const UserLoaded(this.data);
-  final UserListResponse data;
-}
-
-class UserError extends UserState {
-  const UserError(this.message);
-  final String message;
+@freezed
+class UserState with _$UserState {
+  const factory UserState.initial() = _UserStateInitial;
+  const factory UserState.loading() = _UserStateLoading;
+  const factory UserState.loaded(UserListResponse data) = _UserStateLoaded;
+  const factory UserState.error(String message) = _UserStateError;
 }

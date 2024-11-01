@@ -187,6 +187,8 @@ class _AppLocalizationProvider extends InheritedWidget {
   /// The localization controller.
   final AppLocalizationController _localeState;
 
+  AppLocalizationController get localeState => _localeState;
+
   /// The current locale of the app.
   final Locale? currentLocale;
 
@@ -287,7 +289,7 @@ class _AppLocalizationDelegate extends LocalizationsDelegate<Localization> {
           useFallbackTranslationsForEmptyResources,
       ignorePluralRules: ignorePluralRules,
     );
-    return Future.value(Localization.instance);
+    return Localization.instance;
   }
 
   @override

@@ -17,5 +17,24 @@
   "dashboard": {
     "title": "Dashboard",
     "welcome": "Welcome to our app!"
+  },
+  "navigator": {
+    "home": "Home",
+    "settings": "Settings",
+    "calendar": "Calendar",
+    "chart": "Chart",
+    "time": "Time"
+  },
+  "settings": {
+    "title": "Settings",
+    "information_personal": "Personal information",
+    "birthday": "Birthday",
+    "email": "Email",
+    "phone": "Phone",
+    "general_information": "General information",
+    "biometric_authentication": "Biometric authentication",
+    "change_password": "Change password",
+    "language": "Language",
+    "logout": "Logout"
   }
 }

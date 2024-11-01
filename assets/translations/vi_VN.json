@@ -17,5 +17,24 @@
   "dashboard": {
     "title": "Bảng điều khiển",
     "welcome": "Chào mừng bạn đến với ứng dụng của chúng tôi!"
+  },
+  "navigator": {
+    "home": "Trang chủ",
+    "settings": "Cài đặt",
+    "calendar": "Lịch",
+    "chart": "Biểu đồ",
+    "time": "Thời gian"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "information_personal": "Thông tin cá nhân",
+    "birthday": "Ngày sinh",
+    "email": "Email",
+    "phone": "Số điện thoại",
+    "general_information": "Thông tin chung",
+    "biometric_authentication": "Xác thực sinh trắc học",
+    "change_password": "Thay đổi mật khẩu",
+    "language": "Ngôn ngữ",
+    "logout": "Đăng xuất"
   }
 }

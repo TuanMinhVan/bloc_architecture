@@ -3,6 +3,8 @@ class Translations {
   final Map<String, dynamic>? _translations;
   final Map<String?, dynamic> _nestedKeysCache;
 
+  Map<String, dynamic>? get translations => _translations;
+
   String? get(String key) {
     String? returnValue;
 

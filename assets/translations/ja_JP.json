@@ -17,5 +17,24 @@
   "dashboard": {
     "title": "ダッシュボード",
     "welcome": "当社のアプリケーションへようこそ！"
+  },
+  "navigator": {
+    "home": "ホーム",
+    "settings": "設定",
+    "calendar": "カレンダー",
+    "chart": "チャート",
+    "time": "時間"
+  },
+  "settings": {
+    "title": "設定",
+    "information_personal": "個人情報",
+    "birthday": "生年月日",
+    "email": "Eメール",
+    "phone": "電話番号",
+    "general_information": "一般情報",
+    "biometric_authentication": "生体認証",
+    "change_password": "パスワードを変更",
+    "language": "言語",
+    "logout": "ログアウト"
   }
 }

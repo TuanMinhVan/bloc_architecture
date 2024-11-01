@@ -1,27 +1,39 @@
 part of 'authentication_bloc.dart';
 
+enum AuthenticationStatus { unknown, authenticated, unauthenticated }
+
 // Authentication States
-class AuthenticationState extends BaseState {
-  const AuthenticationState({this.isAuthenticated = false});
-  final bool isAuthenticated;
-}
+@freezed
+class AuthenticationState extends BaseState with _$AuthenticationState {
+  const AuthenticationState._();
 
-class AuthenticationStateLoading extends AuthenticationState {
-  const AuthenticationStateLoading() : super(isAuthenticated: false);
-}
+  factory AuthenticationState.unknown() => const AuthenticationState();
 
-/// Login failed state
+  factory AuthenticationState.authenticated(User user) => AuthenticationState(
+        status: AuthenticationStatus.authenticated,
+        user: user,
+      );
 
-class AuthenticationLoginFailure extends AuthenticationState {
-  const AuthenticationLoginFailure(this.error) : super(isAuthenticated: false);
+  factory AuthenticationState.unauthenticated() => const AuthenticationState(
+        status: AuthenticationStatus.unauthenticated,
+      );
 
-  final ApiException error;
+  const factory AuthenticationState({
+    @Default(AuthenticationStatus.unknown) AuthenticationStatus status,
+    User? user,
+  }) = _AuthenticationState;
 
-  String get message {
-    if (error.data != null && error.data is Map) {
-      final data = error.data as Map<String, dynamic>;
-      return data['message'];
-    }
-    return error.message;
-  }
+  factory AuthenticationState.fromJson(Map<String, dynamic> json) =>
+      _$AuthenticationStateFromJson(json);
+
+  // String? get errorText {
+  //   if (error != null) {
+  //     if (error!.data != null && error!.data is Map) {
+  //       final data = error!.data as Map<String, dynamic>;
+  //       return data['message'];
+  //     }
+  //     return error!.message;
+  //   }
+  //   return null;
+  // }
 }

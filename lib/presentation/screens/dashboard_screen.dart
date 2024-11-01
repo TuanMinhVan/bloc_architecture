@@ -1,104 +1,82 @@
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:flutter_svg/svg.dart';
 
-import '../../blocs/authentication/authentication_bloc.dart';
-import '../../blocs/user_bloc/user_bloc.dart';
 import '../../core/config.dart';
-import '../../domain/entities/user.dart';
-import '../widgets/language.dart';
+import '../../core/routes/app_routes.gr.dart';
+import '../widgets/shader_mask.dart';
+
+class BottomBar {
+  BottomBar({required this.title, required this.icon});
+  final String title;
+  final String icon;
+}
 
 /// The dashboard screen.
 ///
 /// This screen displays a list of users.
 @RoutePage(name: 'DashboardRoute')
-class DashboardScreen extends HookWidget {
+class DashboardScreen extends StatelessWidget {
   /// Creates a new instance of [DashboardScreen].
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    /// Fetches the users when the screen is built.
-    useEffect(
-      () {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          context.read<UserBloc>().add(const UserGetEvent());
-        });
-        return;
-      },
-      [],
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.language),
-          onPressed: () {
-            LanguagePicker.pick(context);
-          },
-        ),
-        title: Text(LocaleKeys.dashboardTitle.tr()),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              context
-                  .read<AuthenticationBloc>()
-                  .add(const AuthenticationLogoutEvent());
-            },
-          ),
-        ],
+    final bottoms = [
+      BottomBar(
+        title: LocaleKeys.navigatorHome,
+        icon: Assets.navigatorHome.path,
       ),
-      body: BlocBuilder<UserBloc, UserState>(
-        /// Logs the current state of the authentication bloc.
-
-        builder: (context, state) {
-          /// Displays the list of users if the state is [UserLoaded].
-          if (state is UserLoaded)
-            return UserListView(users: state.data.users);
-
-          /// Displays a progress indicator if the state is [GettingUsers].
-          else if (state is UserLoading)
-            return Skeletonizer(
-              child: UserListView(
-                users: List.generate(20, (index) => const User()),
-              ),
-            );
-
-          /// Displays an error message if the state is [AuthenticationStateGetUsersFailed].
-          else if (state is UserError)
-            return Center(
-              child: Text(state.message),
-            );
-
-          /// Displays an empty container if the state is none of the above.
-          else
-            return const SizedBox();
-        },
+      BottomBar(
+        title: LocaleKeys.navigatorCalendar,
+        icon: Assets.navigatorCalendar.path,
       ),
-    );
-  }
-}
-
-/// A widget that displays a list of users.
-class UserListView extends StatelessWidget {
-  /// Creates a new instance of [UserListView].
-  const UserListView({super.key, required this.users});
-
-  /// The list of users to display.
-  final List<User> users;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: users.length,
-      itemBuilder: (context, index) {
-        final user = users[index];
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundImage: user.image.isNotEmptyAndNotNull
-                ? NetworkImage(user.image!)
-                : null,
+      BottomBar(
+        title: LocaleKeys.navigatorChart,
+        icon: Assets.navigatorChart.path,
+      ),
+      BottomBar(
+        title: LocaleKeys.navigatorTime,
+        icon: Assets.navigatorTime.path,
+      ),
+      BottomBar(
+        title: LocaleKeys.navigatorSettings,
+        icon: Assets.navigatorSettings.path,
+      ),
+    ];
+    return AutoTabsRouter(
+      routes: const [
+        HomeRoute(),
+        CalendarRoute(),
+        ChartRoute(),
+        TimeRoute(),
+        SettingRoute(),
+      ],
+      builder: (context, child) {
+        final tabsRouter = context.tabsRouter;
+        return Scaffold(
+          body: child,
+          bottomNavigationBar: AnimatedBuilder(
+            animation: tabsRouter,
+            builder: (_, __) => BottomNavigationBar(
+              type: BottomNavigationBarType.shifting,
+              selectedFontSize: 12,
+              selectedItemColor: context.colorScheme.primary,
+              items: bottoms.asMap().entries.map((e) {
+                final index = e.key;
+                final bottom = e.value;
+                return BottomNavigationBarItem(
+                  icon: ShaderMaskWidget(
+                    colors: tabsRouter.activeIndex == index
+                        ? [primary, primaryVariant]
+                        : [Colors.black, Colors.black],
+                    child: SvgPicture.asset(bottom.icon),
+                  ),
+                  label: context.tr(bottom.title),
+                );
+              }).toList(),
+              onTap: tabsRouter.setActiveIndex,
+              currentIndex: tabsRouter.activeIndex,
+            ),
           ),
-          title: Text(user.name, style: context.bodyLarge),
         );
       },
     );

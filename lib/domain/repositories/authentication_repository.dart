@@ -16,9 +16,5 @@ abstract class AuthenticationRepository {
     required String password,
   });
 
-  Future<bool> isAuthenticated();
-
   Future<void> logout();
-
-  Future<void> saveToken(String token);
 }

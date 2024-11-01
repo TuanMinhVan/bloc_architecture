@@ -22,8 +22,17 @@ class AppRouter extends RootStackRouter {
     ),
     CustomRoute(
       initial: true,
+      path: '/dashboard',
       page: DashboardRoute.page,
       transitionsBuilder: TransitionsBuilders.noTransition,
+      children: [
+        RedirectRoute(path: '', redirectTo: 'home'),
+        AutoRoute(page: HomeRoute.page, path: 'home'),
+        AutoRoute(page: SettingRoute.page, path: 'setting'),
+        AutoRoute(page: ChartRoute.page, path: 'chart'),
+        AutoRoute(page: CalendarRoute.page, path: 'calendar'),
+        AutoRoute(page: TimeRoute.page, path: 'time'),
+      ],
     ),
   ];
   @override
@@ -33,6 +42,16 @@ class AppRouter extends RootStackRouter {
 @RoutePage(name: 'HomeNavRoute')
 class HomeNav extends AutoRouter {
   const HomeNav({super.key});
+}
+
+@RoutePage(name: 'ChartNavRoute')
+class ChartNav extends AutoRouter {
+  const ChartNav({super.key});
+}
+
+@RoutePage(name: 'CalendarNavRoute')
+class CalendarNav extends AutoRouter {
+  const CalendarNav({super.key});
 }
 
 @RoutePage(name: 'SettingNavRoute')
@@ -46,9 +65,7 @@ class AuthGuard extends AutoRouteGuard {
   void onNavigation(NavigationResolver resolver, StackRouter router) async {
     final authenticationBloc = getIt<AuthenticationBloc>();
 
-    final isLoginIn = await authenticationBloc.checkAuthentication.call();
-
-    Logger.log(isLoginIn, tag: 'AuthGuard');
+    final isLoginIn = await authenticationBloc.authCheck.future;
 
     /// List of routes that do not require authentication
     final acceptRoutes = [
@@ -57,9 +74,11 @@ class AuthGuard extends AutoRouteGuard {
 
     /// check if route is login
     if (isLoginIn || acceptRoutes.contains(resolver.route.name)) {
-      resolver.next(true);
+      resolver.next();
     } else {
-      resolver.redirect(LoginRoute(onResult: resolver.next));
+      resolver.redirect(
+        LoginRoute(onResult: (didLogin) => resolver.next(didLogin)),
+      );
     }
   }
 }

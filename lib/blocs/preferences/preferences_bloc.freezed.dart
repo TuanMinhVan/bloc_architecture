@@ -14,6 +14,314 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+/// @nodoc
+mixin _$PreferencesEvent {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function(Locale locale) changeLocale,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function(Locale locale)? changeLocale,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function(Locale locale)? changeLocale,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_ChangeLocale value) changeLocale,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_ChangeLocale value)? changeLocale,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_ChangeLocale value)? changeLocale,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PreferencesEventCopyWith<$Res> {
+  factory $PreferencesEventCopyWith(
+          PreferencesEvent value, $Res Function(PreferencesEvent) then) =
+      _$PreferencesEventCopyWithImpl<$Res, PreferencesEvent>;
+}
+
+/// @nodoc
+class _$PreferencesEventCopyWithImpl<$Res, $Val extends PreferencesEvent>
+    implements $PreferencesEventCopyWith<$Res> {
+  _$PreferencesEventCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of PreferencesEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$InitialImplCopyWith<$Res> {
+  factory _$$InitialImplCopyWith(
+          _$InitialImpl value, $Res Function(_$InitialImpl) then) =
+      __$$InitialImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$InitialImplCopyWithImpl<$Res>
+    extends _$PreferencesEventCopyWithImpl<$Res, _$InitialImpl>
+    implements _$$InitialImplCopyWith<$Res> {
+  __$$InitialImplCopyWithImpl(
+      _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PreferencesEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$InitialImpl implements _Initial {
+  const _$InitialImpl();
+
+  @override
+  String toString() {
+    return 'PreferencesEvent.initial()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$InitialImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function(Locale locale) changeLocale,
+  }) {
+    return initial();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function(Locale locale)? changeLocale,
+  }) {
+    return initial?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function(Locale locale)? changeLocale,
+    required TResult orElse(),
+  }) {
+    if (initial != null) {
+      return initial();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_ChangeLocale value) changeLocale,
+  }) {
+    return initial(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_ChangeLocale value)? changeLocale,
+  }) {
+    return initial?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_ChangeLocale value)? changeLocale,
+    required TResult orElse(),
+  }) {
+    if (initial != null) {
+      return initial(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Initial implements PreferencesEvent {
+  const factory _Initial() = _$InitialImpl;
+}
+
+/// @nodoc
+abstract class _$$ChangeLocaleImplCopyWith<$Res> {
+  factory _$$ChangeLocaleImplCopyWith(
+          _$ChangeLocaleImpl value, $Res Function(_$ChangeLocaleImpl) then) =
+      __$$ChangeLocaleImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Locale locale});
+}
+
+/// @nodoc
+class __$$ChangeLocaleImplCopyWithImpl<$Res>
+    extends _$PreferencesEventCopyWithImpl<$Res, _$ChangeLocaleImpl>
+    implements _$$ChangeLocaleImplCopyWith<$Res> {
+  __$$ChangeLocaleImplCopyWithImpl(
+      _$ChangeLocaleImpl _value, $Res Function(_$ChangeLocaleImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PreferencesEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? locale = null,
+  }) {
+    return _then(_$ChangeLocaleImpl(
+      null == locale
+          ? _value.locale
+          : locale // ignore: cast_nullable_to_non_nullable
+              as Locale,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ChangeLocaleImpl implements _ChangeLocale {
+  const _$ChangeLocaleImpl(this.locale);
+
+  @override
+  final Locale locale;
+
+  @override
+  String toString() {
+    return 'PreferencesEvent.changeLocale(locale: $locale)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ChangeLocaleImpl &&
+            (identical(other.locale, locale) || other.locale == locale));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, locale);
+
+  /// Create a copy of PreferencesEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ChangeLocaleImplCopyWith<_$ChangeLocaleImpl> get copyWith =>
+      __$$ChangeLocaleImplCopyWithImpl<_$ChangeLocaleImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function(Locale locale) changeLocale,
+  }) {
+    return changeLocale(locale);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function(Locale locale)? changeLocale,
+  }) {
+    return changeLocale?.call(locale);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function(Locale locale)? changeLocale,
+    required TResult orElse(),
+  }) {
+    if (changeLocale != null) {
+      return changeLocale(locale);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_ChangeLocale value) changeLocale,
+  }) {
+    return changeLocale(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_ChangeLocale value)? changeLocale,
+  }) {
+    return changeLocale?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_ChangeLocale value)? changeLocale,
+    required TResult orElse(),
+  }) {
+    if (changeLocale != null) {
+      return changeLocale(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _ChangeLocale implements PreferencesEvent {
+  const factory _ChangeLocale(final Locale locale) = _$ChangeLocaleImpl;
+
+  Locale get locale;
+
+  /// Create a copy of PreferencesEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ChangeLocaleImplCopyWith<_$ChangeLocaleImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 PreferencesState _$PreferencesStateFromJson(Map<String, dynamic> json) {
   return _PreferencesLoaded.fromJson(json);
 }

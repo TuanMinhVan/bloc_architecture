@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
-
-import '../../blocs/authentication/authentication_bloc.dart';
+import '../../blocs/login/login_bloc.dart';
 import '../../core/config.dart';
 import '../../core/routes/app_routes.gr.dart';
+import '../../core/services/injection_container.dart';
+import '../../domain/usecases/login_user.dart';
 import '../widgets/button_custom.dart';
 import '../widgets/text_field_custom.dart';
 
@@ -27,6 +27,8 @@ class LoginScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loginBloc = LoginBloc(getIt<LoginUser>());
+
     /// The form key.
     final formKey = useMemoized(() => GlobalKey<FormState>());
 
@@ -51,10 +53,10 @@ class LoginScreen extends HookWidget {
     useEffect(
       () {
         /// If the app is in debug mode, set the username and password to default values.
-        if (kDebugMode) {
-          username.text = 'emilys';
-          password.text = 'emilyspass';
-        }
+        // if (kDebugMode) {
+        username.text = 'emilys';
+        password.text = 'emilyspass';
+        // }
 
         /// Update the state and add listeners to the controllers.
         checkFieldsEmpty.value = areFieldsEmpty();
@@ -67,25 +69,32 @@ class LoginScreen extends HookWidget {
           password.removeListener(listener);
         };
       },
-      [username, password],
+      [],
     );
 
     /// The BlocConsumer that listens to the authentication bloc.
-    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
-      /// The listener that handles the authentication state.
-      listener: (context, state) {
-        /// If the login is successful, navigate to the dashboard.
-        if (state.isAuthenticated) {
-          AutoRouter.of(context).pushAndPopUntil(
-            const DashboardRoute(),
-            predicate: (route) => false,
-          );
-        }
-      },
+    return BlocProvider(
+      create: (context) => loginBloc,
+      child: BlocListener<LoginBloc, LoginState>(
+        listenWhen: (previous, current) => current is LoginSuccess,
 
-      /// The builder that builds the widget based on the authentication state.
-      builder: (context, state) {
-        return Scaffold(
+        /// The listener that handles the authentication state.
+        listener: (context, state) {
+          /// If the login is successful, navigate to the dashboard.
+          if (state is LoginSuccess) {
+            if (onResult != null) {
+              onResult!(true);
+            } else {
+              AutoRouter.of(context).pushAndPopUntil(
+                const DashboardRoute(),
+                predicate: (route) => false,
+              );
+            }
+          }
+        },
+
+        /// The builder that builds the widget based on the authentication state.
+        child: Scaffold(
           /// Prevent the scaffold from resizing to avoid the bottom inset.
           resizeToAvoidBottomInset: false,
           body: Container(
@@ -119,14 +128,14 @@ class LoginScreen extends HookWidget {
 
                       /// Display the login title.
                       TextApp.bold(
-                        LocaleKeys.loginTitle.tr(),
+                        context.tr(LocaleKeys.loginTitle),
                         type: TextType.xxlg,
                       ),
                       HeightBox(8.h),
 
                       /// Display the login description.
                       TextApp(
-                        LocaleKeys.loginDescription.tr(),
+                        context.tr(LocaleKeys.loginDescription),
                         textAlign: TextAlign.center,
                       ),
                       HeightBox(20.h),
@@ -134,39 +143,42 @@ class LoginScreen extends HookWidget {
                       /// Display the username text field.
                       TextFieldCustom(
                         controller: username,
-                        hintText: LocaleKeys.loginUsername.tr(),
+                        hintText: context.tr(LocaleKeys.loginUsername),
                         keyboardType: TextInputType.emailAddress,
                         prefixIcon: Assets.iconsMail.svg(),
                       ),
                       SizedBox(height: 16.h),
 
                       /// Display the password text field.
-                      TextFieldCustom(
-                        controller: password,
-                        hintText: LocaleKeys.loginPassword.tr(),
-                        obscureText: true,
-                        prefixIcon: Assets.iconsLock.svg(),
-                        errorText: state is AuthenticationLoginFailure
-                            ? state.message
-                            : null,
+                      BlocSelector<LoginBloc, LoginState, String?>(
+                        selector: (state) => state.errorMessage,
+                        builder: (context, state) {
+                          return TextFieldCustom(
+                            controller: password,
+                            hintText: context.tr(LocaleKeys.loginPassword),
+                            obscureText: true,
+                            prefixIcon: Assets.iconsLock.svg(),
+                            errorText: state,
+                          );
+                        },
                       ),
                       SizedBox(height: 24.h),
 
                       /// Display the login button.
                       GradientButton(
-                        text: LocaleKeys.loginButton.tr(),
+                        text: context.tr(LocaleKeys.loginButton),
                         onPressed: checkFieldsEmpty.value
                             ? null
                             : () {
                                 /// Validate the form.
                                 if (formKey.currentState!.validate()) {
                                   /// Dispatch the login event to the authentication bloc.
-                                  context.read<AuthenticationBloc>().add(
-                                        AuthenticationLoginEvent(
-                                          username.text,
-                                          password.text,
-                                        ),
-                                      );
+                                  loginBloc.add(
+                                    LoginEvent.login(
+                                      username.text,
+                                      password.text,
+                                    ),
+                                  );
                                 }
                               },
                       ),
@@ -176,8 +188,8 @@ class LoginScreen extends HookWidget {
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
